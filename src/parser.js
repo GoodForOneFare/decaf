@@ -106,11 +106,27 @@ function mapRange(node, meta) {
   return compiledRange.expression;
 }
 
+function mapRangeTo(range, meta) {
+  const rangeTo = mapExpression(range.to, meta);
+  if (range.exclusive === false && rangeTo.operator === '-') {
+    if (rangeTo.argument.value === 1) {
+      return null;
+    }
+
+    --rangeTo.argument.value;
+  }
+
+  return rangeTo;
+}
+
 function mapSlice(node, meta) {
   const {range} = node;
   const args = [range.from ? mapExpression(range.from, meta) : b.literal(0)];
   if (range.to) {
-    args.push(mapExpression(range.to, meta));
+    const rangeTo = mapRangeTo(range, meta);
+    if (rangeTo) {
+      args.push(rangeTo);
+    }
   }
   return b.callExpression(b.identifier('slice'), args);
 }

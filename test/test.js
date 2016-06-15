@@ -2407,6 +2407,18 @@ describe('slices', () => {
     const expected = `bam.slice(0);`;
     expect(compile(example)).toEqual(expected);
   });
+
+  it('bam[foo..-1]', () => {
+    const example = `bam[foo..-1]`;
+    const expected = `bam.slice(foo);`;
+    expect(compile(example)).toEqual(expected);
+  });
+
+  it('bam[foo..-2]', () => {
+    const example = `bam[foo..-2]`;
+    const expected = `bam.slice(foo, -1);`;
+    expect(compile(example)).toEqual(expected);
+  });
 });
 
 describe('conditional expressions', () => {
